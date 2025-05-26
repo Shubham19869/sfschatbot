@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CampusWise – College FAQ Chatbot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --primary-color: #004080;
+      --primary-gradient: linear-gradient(135deg, #004080 0%, #0070c0 100%);
+      --secondary-color: #002244;
+      --highlight-color: #ffd700;
+      --text-light: #fff;
+      --shadow-color: rgba(0, 0, 0, 0.15);
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --focus-outline: 3px solid var(--highlight-color);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-family);
+      background-color: #f5f7fa;
+      color: #222;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    header.site-header {
+      background: var(--primary-gradient);
+      color: var(--text-light);
+      padding: 15px 20px;
+      box-shadow: 0 4px 10px var(--shadow-color);
+      position: sticky;
+      top: 0;
+      z-index: 1100;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      text-decoration: none;
+      color: var(--text-light);
+    }
+
+    .logo-title img {
+      height: 50px;
+      width: 50px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 2px rgba(0,0,0,0.4));
+      transition: transform 0.3s ease;
+    }
+    .logo-title img:hover,
+    .logo-title:focus-visible img {
+      transform: rotate(10deg) scale(1.1);
+      outline-offset: 2px;
+    }
+
+    .logo-title h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text-light);
+      letter-spacing: 1.5px;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+      margin: 0;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      font-weight: 600;
+      font-size: 1rem;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: var(--text-light);
+      text-decoration: none;
+      position: relative;
+      padding: 5px 0;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      outline-offset: 3px;
+    }
+    nav a svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--text-light);
+      transition: fill 0.3s ease;
+    }
+    nav a:hover,
+    nav a:focus-visible {
+      color: var(--highlight-color);
+      outline: none;
+    }
+    nav a:hover svg,
+    nav a:focus-visible svg {
+      fill: var(--highlight-color);
+    }
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--highlight-color);
+      transition: width 0.3s ease;
+      border-radius: 2px;
+    }
+    nav a:hover::after,
+    nav a:focus-visible::after {
+      width: 100%;
+    }
+/* CTA button */
+.cta-btn {
+  display: inline-block; /* ensures proper box model for <a> */
+  background-color: var(--highlight-color);
+  color: var(--primary-color);
+  font-weight: 700;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 22px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(255, 215, 0, 0.5);
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+  font-size: 1rem;
+  white-space: nowrap;
+  text-align: center; /* center text inside button */
+  text-decoration: none; /* removes underline from <a> */
+  line-height: 1.2; /* better vertical alignment */
+}
+
+.cta-btn:hover,
+.cta-btn:focus-visible {
+  background-color: #e6c200;
+  color: var(--secondary-color);
+  box-shadow: 0 6px 12px rgba(230, 194, 0, 0.7);
+  outline: none;
+}
+
+/* Optional: keyboard focus for accessibility */
+.cta-btn:focus-visible {
+  outline: 3px solid var(--highlight-color);
+  outline-offset: 3px;
+}
+
+    /* Mobile menu toggle */
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: var(--text-light);
+      cursor: pointer;
+      user-select: none;
+      padding: 6px;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+    .menu-toggle:hover,
+    .menu-toggle:focus-visible {
+      color: var(--highlight-color);
+      outline: none;
+      transform: rotate(90deg);
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 900px) {
+      nav {
+        display: none;
+        position: absolute;
+        top: 65px;
+        right: 20px;
+        background: var(--secondary-color);
+        flex-direction: column;
+        width: 220px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        padding: 10px 0;
+        z-index: 1101;
+      }
+      nav.show {
+        display: flex;
+      }
+      .cta-btn {
+        display: none;
+      }
+      .menu-toggle {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="container" role="navigation" aria-label="Primary navigation">
+    <a href="#" class="logo-title" aria-label="CampusWise Home" tabindex="0">
+       <img src="/static/achievements/logo2.png" alt="CampusWise Logo">
+
+      <h1>CampusWise</h1>
+    </a>
+
+    <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-navigation">
+      &#9776;
+    </button>
+
+    <nav id="primary-navigation" aria-live="polite">
+      <a href="#chat" tabindex="0" aria-label="Chat section">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H5.17L4 18.17V4z"/></svg>
+        Chat
+      </a>
+      <a href="#features" tabindex="0" aria-label="Features section">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l8 8-8 8-1.41-1.41L16.17 12 10.59 6.41z"/></svg>
+        Features
+      </a>
+      <a href="#achievements" tabindex="0" aria-label="Achievements section">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17l-5 3V6l5-3 5 3v14l-5-3z"/></svg>
+        Achievements
+      </a>
+      <a href="#contact" tabindex="0" aria-label="Contact section">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4v16h16V4zM7 9h10v2H7V9z"/></svg>
+        Contact
+      </a>
+    </nav>
+
+ <a href="https://www.sfscollege.in/" class="cta-btn" target="_blank" rel="noopener noreferrer" aria-label="Visit the college website">
+  College Website
+</a>
+
+  </div>
+</header>
+
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const nav = document.getElementById('primary-navigation');
+
+  menuToggle.addEventListener('click', () => {
+    const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', !expanded);
+    nav.classList.toggle('show');
+  });
+
+  // Close menu when clicking outside (mobile)
+  document.addEventListener('click', (e) => {
+    if (!nav.contains(e.target) && !menuToggle.contains(e.target)) {
+      nav.classList.remove('show');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+</body>
+</html>
